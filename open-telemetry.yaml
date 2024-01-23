@@ -35,11 +35,22 @@ data:
       opencensus:
         endpoint: "REVDEBUG_SERVER_NAME:11800"
         insecure: true
+        retry_on_failure:
+          enabled: true
+          # Will retry 2 seconds after the failure
+          initial_interval: 2s
+          # After 60 seconds will give up if not succesful
+          max_interval: 60s
+          # Maximum time spent on trying to resend the data
+          max_elapsed_time: 120s
       logging:
         loglevel: info
     receivers:
       prometheus:
         config:
+          global:
+            scrape_interval: 30s
+            evaluation_interval: 30s
           scrape_configs:
           # @feature: kubernetes-monitor; configuration to scrape Kubernetes Nodes metrics
           - job_name: 'kubernetes-cadvisor'
